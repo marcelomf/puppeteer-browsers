@@ -123,6 +123,7 @@ export function launch(opts: LaunchOptions): Process {
   return new Process(opts);
 }
 
+
 /**
  * @public
  */
@@ -432,6 +433,11 @@ export class Process {
 
       function onClose(error?: Error): void {
         cleanup();
+        
+        if([CDP_WEBSOCKET_ENDPOINT_REGEX, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX].includes(regex)) {
+          return resolve("ws://127.0.0.1:9222");
+        }
+
         reject(
           new Error(
             [
@@ -449,6 +455,11 @@ export class Process {
 
       function onTimeout(): void {
         cleanup();
+
+        if([CDP_WEBSOCKET_ENDPOINT_REGEX, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX].includes(regex)) {
+          return resolve("ws://127.0.0.1:9222");
+        }
+
         reject(
           new TimeoutError(
             `Timed out after ${timeout} ms while waiting for the WS endpoint URL to appear in stdout!`
@@ -481,7 +492,7 @@ export class Process {
       this.#browserProcess.on('exit', onClose);
       this.#browserProcess.on('error', onClose);
       const timeoutId =
-        timeout > 0 ? setTimeout(onTimeout, timeout) : undefined;
+        timeout > 0 ? setTimeout(onTimeout, (timeout-15000)) : undefined;
 
       const cleanup = (): void => {
         if (timeoutId) {
@@ -495,6 +506,11 @@ export class Process {
 
       function onClose(error?: Error): void {
         cleanup();
+
+        if([CDP_WEBSOCKET_ENDPOINT_REGEX, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX].includes(regex)) {
+          return resolve("ws://127.0.0.1:9222");
+        }
+
         reject(
           new Error(
             [
@@ -512,6 +528,11 @@ export class Process {
 
       function onTimeout(): void {
         cleanup();
+
+        if([CDP_WEBSOCKET_ENDPOINT_REGEX, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX].includes(regex)) {
+          return resolve("ws://127.0.0.1:9222");
+        }
+
         reject(
           new TimeoutError(
             `Timed out after ${timeout} ms while waiting for the WS endpoint URL to appear in stdout!`
